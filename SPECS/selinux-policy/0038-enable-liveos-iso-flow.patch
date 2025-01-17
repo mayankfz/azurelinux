@@ -1,6 +1,6 @@
-From 43b44054474cf139ee11afa386f0d4e5b2204a07 Mon Sep 17 00:00:00 2001
+From 38ea1df233d428d0ae8e62ecfac2f5472002cc2e Mon Sep 17 00:00:00 2001
 From: George Mileka <gmileka@outlook.com>
-Date: Fri, 6 Dec 2024 14:21:18 -0800
+Date: Fri, 17 Jan 2025 12:32:47 -0800
 Subject: [PATCH] Enable LiveOS ISO Flow
 
 In the LiveOS ISO flow, when selinux is enabled, initrd loads the
@@ -19,13 +19,14 @@ they need.
  policy/modules/kernel/devices.if     | 18 ++++++++++++++++++
  policy/modules/kernel/kernel.if      | 19 +++++++++++++++++++
  policy/modules/kernel/kernel.te      |  1 +
+ policy/modules/services/ssh.te       |  5 +++++
  policy/modules/system/authlogin.te   |  1 +
  policy/modules/system/getty.te       |  2 ++
  policy/modules/system/init.te        |  7 +++++++
  policy/modules/system/locallogin.te  |  1 +
  policy/modules/system/selinuxutil.te |  2 ++
  policy/modules/system/udev.te        |  2 ++
- 11 files changed, 57 insertions(+)
+ 12 files changed, 62 insertions(+)
 
 diff --git a/policy/modules/admin/usermanage.te b/policy/modules/admin/usermanage.te
 index 57a9848bc..ef24fb85b 100644
@@ -131,6 +132,29 @@ index ea08036b6..59c1afeaf 100644
  allow kernel_t self:process { transition signal_perms getsched setsched getsession getpgid setpgid getcap setcap share getattr noatsecure siginh rlimitinh dyntransition setkeycreate setsockcreate getrlimit };
  allow kernel_t self:shm create_shm_perms;
  allow kernel_t self:sem create_sem_perms;
+diff --git a/policy/modules/services/ssh.te b/policy/modules/services/ssh.te
+index f3c966ed0..8075c1240 100644
+--- a/policy/modules/services/ssh.te
++++ b/policy/modules/services/ssh.te
+@@ -243,6 +243,8 @@ allow sshd_t self:key { search link write };
+ 
+ allow sshd_t sshd_keytab_t:file read_file_perms;
+ 
++allow sshd_t var_t:file { getattr open read };
++
+ manage_dirs_pattern(sshd_t, sshd_tmp_t, sshd_tmp_t)
+ manage_files_pattern(sshd_t, sshd_tmp_t, sshd_tmp_t)
+ manage_sock_files_pattern(sshd_t, sshd_tmp_t, sshd_tmp_t)
+@@ -343,6 +345,9 @@ allow ssh_keygen_t self:unix_stream_socket create_stream_socket_perms;
+ allow ssh_keygen_t sshd_key_t:file manage_file_perms;
+ files_etc_filetrans(ssh_keygen_t, sshd_key_t, file)
+ 
++allow ssh_keygen_t var_t:dir { write add_name remove_name };
++allow ssh_keygen_t var_t:file { getattr setattr create open read write rename };
++
+ kernel_read_kernel_sysctls(ssh_keygen_t)
+ kernel_dontaudit_getattr_proc(ssh_keygen_t)
+ kernel_dontaudit_read_system_state(ssh_keygen_t)
 diff --git a/policy/modules/system/authlogin.te b/policy/modules/system/authlogin.te
 index 9dfef7a0c..791be68c2 100644
 --- a/policy/modules/system/authlogin.te
