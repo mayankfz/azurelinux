@@ -72,7 +72,7 @@
 Summary:        MySQL
 Name:           mysql
 Version:        8.4.3
-Release:        1%{?dist}
+Release:        1001%{?dist}
 License:        GPLv2 with exceptions AND LGPLv2 AND BSD
 Vendor:         Microsoft Corporation
 Distribution:   Azure Linux
@@ -339,6 +339,7 @@ the MySQL server and some accompanying files and directories.
 
 %package          devel
 Summary:          Files for development of MySQL applications
+Requires:         %{name}-libs = %{version}-%{release}
 Requires:         openssl-devel
 Requires:         zlib-devel
 Requires:         libzstd-devel
@@ -641,6 +642,9 @@ fi
 %postun server
 %systemd_postun_with_restart %{daemon_name}.service
 
+%post libs -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
+
 %files
 %defattr(-,root,root)
 %license LICENSE router/LICENSE.router
@@ -678,7 +682,7 @@ fi
 
 %files libs
 %dir %{_libdir}/mysql
-%{_libdir}/mysql/libmysqlclient*.so.*
+%{_libdir}/mysql/libmysqlclient*.so*
 %config(noreplace) %{_sysconfdir}/ld.so.conf.d/*
 
 %files config
