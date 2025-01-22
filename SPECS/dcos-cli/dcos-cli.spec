@@ -1,13 +1,14 @@
 Summary:        The command line for DC/OS
 Name:           dcos-cli
 Version:        1.2.0
-Release:        15%{?dist}
+Release:        16%{?dist}
 License:        Apache-2.0
 Vendor:         Microsoft Corporation
 Distribution:   Azure Linux
 Group:          Applications/Tools
 URL:            https://github.com/dcos/dcos-cli
 Source0:        https://github.com/dcos/dcos-cli/archive/refs/tags/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source1:        dcos-cli-1.2.0-govendor-v1.tar.gz
 Patch0:         CVE-2020-26160.patch
 BuildRequires:  golang >= 1.17.1
 BuildRequires:  git
@@ -23,7 +24,7 @@ The command line for DC/OS.
 %build
 export GOPATH=%{our_gopath}
 export NO_DOCKER=1
-# No mod download append -mod=vebdor to use vednor cache locally
+# No mod download append -mod=vendor to use vednor cache locally
 sed -i 's/CGO_ENABLED=0 go build/CGO_ENABLED=0 go build -mod=vendor/' ./Makefile
 # Use correct version
 sed -i 's/VERSION?=$(shell git rev-parse HEAD)/VERSION?=%{version}/' ./Makefile
@@ -45,6 +46,10 @@ go test -mod=vendor
 %{_bindir}/dcos
 
 %changelog
+* Wed Jan 22 2025 Osama Esmail <osamaesmail@microsoft.com> - 1.2.0-16
+- Added govendor tarball & generate_source_tarball.sh
+- Fixed typo in a comment
+
 * Fri Jul 05 2024 Neha Agarwal <nehaagarwal@microsoft.com> - 1.2.0-15
 - Patch CVE-2020-26160
 

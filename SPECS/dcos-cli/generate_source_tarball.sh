@@ -102,6 +102,7 @@ tar -xf $SRC_TARBALL
 
 echo "Vendor go modules..."
 cd $NAME_VER
+go mod tidy
 go mod vendor
 
 echo ""
