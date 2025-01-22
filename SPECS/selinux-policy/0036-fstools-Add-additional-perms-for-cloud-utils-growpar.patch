@@ -1,4 +1,4 @@
-From b9d020a7a6ec6a9f63f53c461c84ac88ea32c1d5 Mon Sep 17 00:00:00 2001
+From 8700c7daf92f7f29432851017649d313b66369eb Mon Sep 17 00:00:00 2001
 From: Chris PeBenito <chpebeni@linux.microsoft.com>
 Date: Tue, 6 Aug 2024 11:35:33 -0400
 Subject: [PATCH 36/37] fstools: Add additional perms for cloud-utils-growpart.
@@ -9,8 +9,8 @@ Signed-off-by: Chris PeBenito <chpebeni@linux.microsoft.com>
 ---
  policy/modules/admin/cloudinit.if | 38 +++++++++++++++++++++++++++++++
  policy/modules/system/fstools.fc  |  2 ++
- policy/modules/system/fstools.te  | 14 ++++++++++--
- 3 files changed, 52 insertions(+), 2 deletions(-)
+ policy/modules/system/fstools.te  | 16 +++++++++++--
+ 3 files changed, 54 insertions(+), 2 deletions(-)
 
 diff --git a/policy/modules/admin/cloudinit.if b/policy/modules/admin/cloudinit.if
 index 6d427e771..25e94729e 100644
@@ -86,10 +86,10 @@ index 63423802d..0fa9fb5c0 100644
  /usr/sbin/install-mbr		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
  /usr/sbin/jfs_.*		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 diff --git a/policy/modules/system/fstools.te b/policy/modules/system/fstools.te
-index d5e090c28..18a42890c 100644
+index d5e090c28..d93819478 100644
 --- a/policy/modules/system/fstools.te
 +++ b/policy/modules/system/fstools.te
-@@ -201,8 +201,18 @@ optional_policy(`
+@@ -201,8 +201,20 @@ optional_policy(`
  ')
  
  optional_policy(`
@@ -97,6 +97,8 @@ index d5e090c28..18a42890c 100644
 -	cloudinit_create_tmp_files(fsadm_t)
 +	cloudinit_manage_tmp_files(fsadm_t)
 +	cloudinit_manage_tmp_dirs(fsadm_t)
++
++	fs_getattr_tmpfs(fsadm_t)
 +
 +	optional_policy(`
 +		# cloud-utils-growpart
@@ -111,5 +113,5 @@ index d5e090c28..18a42890c 100644
  
  optional_policy(`
 -- 
-2.46.0
+2.48.1
 
