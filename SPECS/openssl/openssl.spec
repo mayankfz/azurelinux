@@ -9,7 +9,7 @@
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
 Version: 3.3.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Vendor:         Microsoft Corporation
 Distribution:   Azure Linux
 Source: https://github.com/openssl/openssl/releases/download/openssl-%{version}/openssl-%{version}.tar.gz
@@ -62,6 +62,9 @@ Patch52:  0052-Allow-SHA1-in-seclevel-1-if-rh-allow-sha1-signatures.patch
 # # See notes in the patch for details, but this patch will not be needed if
 # # the openssl issue https://github.com/openssl/openssl/issues/7048 is ever implemented and released.
 Patch80:  0001-Replacing-deprecated-functions-with-NULL-or-highest.patch
+# https://openssl-library.org/news/secadv/20250120.txt
+# Can remove when we upgrade to 3.3.3
+Patch81:  CVE-2024-13176.patch
 
 License: Apache-2.0
 URL: http://www.openssl.org/
@@ -358,6 +361,9 @@ install -m644 %{SOURCE9} \
 %ldconfig_scriptlets libs
 
 %changelog
+* Thu Jan 23 2025 Tobias Brick <tobiasb@microsoft.com> - 3.3.2-2
+- Patch CVE-2024-13176
+
 * Thu Sep 19 2024 Tobias Brick <tobiasb@microsoft.com> - 3.3.2-1
 - Upgrade to 3.3.2
 
